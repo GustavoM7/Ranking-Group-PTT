@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>Pontuação</title>
+  </head>
+  
+  <body style="display:flex; min-height:100vh; width:100%; margin: 0; padding: 0; align-items: center; justify-content: center; flex-direction:column">
+    <div class="card text-center">
+        <div class="card-header">
+            Tabela de Pontuação
+        </div>
+        <div class="card-body">
+          <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Membro</th>
+          <th scope="col">Pontuação</th>
+        </tr>
+      </thead>
+      <tbody id = 'Tabela'>
+      </tbody>
+    </table>
+          </div>
+        </div>
+    </div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+    <script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyD-lHn4f7Xs6aItYuS5lQ3BaAVcepynJZY",
+        authDomain: "prototipo-pontogrupo.firebaseapp.com",
+        databaseURL: "https://prototipo-pontogrupo.firebaseio.com",
+        projectId: "prototipo-pontogrupo",
+        storageBucket: "",
+        messagingSenderId: "1034112433903"
+      };
+      firebase.initializeApp(config);
+    </script>
+
+    <script>
+      function main() {
+          
+          firebase.database().ref('/Membros').orderByValue().on('value', function (snapshot){
+
+            let nome
+            let pontos
+            let tabela = document.getElementById('Tabela')
+            let linha
+            let colunaUm
+            let colunaDois
+            let espacoBarra
+            let barraPonto
+            let posi
+            let cont = 1
+
+
+            snapshot.forEach(function (item){
+
+
+              /*<tr>
+              <th scope="row">1</th>
+              <td>Fulano</td>
+              <td>
+                  <div class="progress">
+                      <div class="progress-bar" role="progressbar" style="width: 75%;">75%</div>
+                    </div>  
+              </td>
+              */
+              
+              nome = item.key
+              pontos = item.val()
+              pontos = 100 - pontos
+
+              linha = document.createElement("tr")
+
+              posi = document.createElement("th")
+              posi.innerHTML = cont
+              linha.appendChild(posi)
+
+              colunaUm = document.createElement("td")
+              colunaUm.innerHTML = nome
+              linha.appendChild(colunaUm)
+
+              colunaDois = document.createElement("td")
+    
+              espacoBarra = document.createElement("div")
+              espacoBarra.setAttribute("class", "progress")
+
+              barraPonto = document.createElement("div")
+              barraPonto.innerHTML = pontos
+              barraPonto.setAttribute("class", "progress-bar")
+              barraPonto.setAttribute("role", "progressbar")
+              barraPonto.setAttribute("style", "width:"+pontos+"%")
+
+              espacoBarra.appendChild(barraPonto)
+              colunaDois.appendChild(espacoBarra)
+              
+              linha.appendChild(colunaDois)
+
+              tabela.appendChild(linha)
+
+              cont++
+
+          })
+
+        })
+
+      }
+       
+      main()
+    </script>
+
+  </body>
+</html>
