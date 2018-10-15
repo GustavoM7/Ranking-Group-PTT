@@ -59,7 +59,7 @@
     <script>
       function main() {
           
-          firebase.database().ref('/Membros').orderByValue().on('value', function (snapshot){
+          firebase.database().ref('/Membros').orderByChild('pontos').on('value', function (snapshot){
 
             let tabela = document.getElementById('Tabela')
             tabela.innerHTML = ' ' //Limpando valores para evitar repetição
@@ -102,70 +102,73 @@
               */
               
               nome = item.key
-              pontos = item.val()
-              pontos = pontos*(-1) //Pontos são guardados em valor negativo para ordem correta
 
-              linha = document.createElement("tr")
+              firebase.database().ref('Membros/'+nome+"/pontos").on('value', function(snapshot) {
+                pontos = snapshot.val()
+                pontos = pontos*(-1) //Pontos são guardados em valor negativo para ordem correta
 
-              posi = document.createElement("th")
-              posi.innerHTML = cont
-              linha.appendChild(posi)
+                linha = document.createElement("tr")
 
-              colunaUm = document.createElement("td")
-              colunaUm.innerHTML = nome
-              linha.appendChild(colunaUm)
+                posi = document.createElement("th")
+                posi.innerHTML = cont
+                linha.appendChild(posi)
 
-              colunaDois = document.createElement("td")
-    
-              espacoBarra = document.createElement("div")
-              espacoBarra.setAttribute("class", "progress")
+                colunaUm = document.createElement("td")
+                colunaUm.innerHTML = nome
+                linha.appendChild(colunaUm)
 
-              barraPonto = document.createElement("div")
-              barraPonto.innerHTML = pontos
-              barraPonto.setAttribute("class", "progress-bar")
-              barraPonto.setAttribute("role", "progressbar")
-              barraPonto.setAttribute("style", "width:"+pontos+"%")
+                colunaDois = document.createElement("td")
+      
+                espacoBarra = document.createElement("div")
+                espacoBarra.setAttribute("class", "progress")
 
-              espacoBarra.appendChild(barraPonto)
-              colunaDois.appendChild(espacoBarra)
-              
-              linha.appendChild(colunaDois)
+                barraPonto = document.createElement("div")
+                barraPonto.innerHTML = pontos
+                barraPonto.setAttribute("class", "progress-bar")
+                barraPonto.setAttribute("role", "progressbar")
+                barraPonto.setAttribute("style", "width:"+pontos+"%")
 
-              colunaTres = document.createElement("td")
+                espacoBarra.appendChild(barraPonto)
+                colunaDois.appendChild(espacoBarra)
+                
+                linha.appendChild(colunaDois)
 
-              divIput = document.createElement("div")
-              divIput.setAttribute("class", "input-group mb-3")
+                colunaTres = document.createElement("td")
 
-              espacoInput = document.createElement("input")
-              espacoInput.setAttribute("type", "number");
-              espacoInput.setAttribute("class", "forma-control");
-              espacoInput.setAttribute("aria-describedby", "button-addon2");
-              espacoInput.id = nome
-              espacoInput.setAttribute("value", " ")
+                divIput = document.createElement("div")
+                divIput.setAttribute("class", "input-group mb-3")
 
-              divIput.appendChild(espacoInput)
+                espacoInput = document.createElement("input")
+                espacoInput.setAttribute("type", "number");
+                espacoInput.setAttribute("class", "forma-control");
+                espacoInput.setAttribute("aria-describedby", "button-addon2");
+                espacoInput.id = nome
+                espacoInput.setAttribute("value", " ")
 
-              divButton = document.createElement("div")
-              divButton.setAttribute("class", "input-group-append")
+                divIput.appendChild(espacoInput)
 
-              espacoButton = document.createElement("button")
-              espacoButton.setAttribute("class", "btn btn-outline-secondary")
-              espacoButton.setAttribute("type", "button")
-              espacoButton.setAttribute("id","button-addon2")
-              espacoButton.setAttribute("onclick", "pontuar("+nome+","+pontos+")")
-              espacoButton.innerHTML = "Enviar"
+                divButton = document.createElement("div")
+                divButton.setAttribute("class", "input-group-append")
 
-              divButton.appendChild(espacoButton)
-              
-              divIput.appendChild(divButton)
+                espacoButton = document.createElement("button")
+                espacoButton.setAttribute("class", "btn btn-outline-secondary")
+                espacoButton.setAttribute("type", "button")
+                espacoButton.setAttribute("id","button-addon2")
+                espacoButton.setAttribute("onclick", "pontuar("+nome+","+pontos+")")
+                espacoButton.innerHTML = "Enviar"
 
-              colunaTres.appendChild(divIput)
+                divButton.appendChild(espacoButton)
+                
+                divIput.appendChild(divButton)
 
-              linha.appendChild(colunaTres)
+                colunaTres.appendChild(divIput)
 
-              tabela.appendChild(linha)
+                linha.appendChild(colunaTres)
 
-              cont++
+                tabela.appendChild(linha)
+
+                cont++
+              })
 
           })
 
@@ -177,12 +180,11 @@
 
       function pontuar(Membro, pontos){
         let acrescimo = document.getElementById(Membro.id).value
-        console.log(acrescimo)
-        console.log(Membro.id)
         let nome = Membro.id
 
-        let update = nome + ":" + (pontos - acrescimo)
-        firebase.database().ref('/Membros/'+nome).update({})
+        firebase.database().ref('/Membros/'+nome).update({
+          pontos : - pontos - acrescimo
+        })
       }
     </script>
 
