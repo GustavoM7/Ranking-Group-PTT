@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
-    <title>Pontuação</title>
+    <title>Pontuação (ADM)</title>
   </head>
   
   <body style="display:flex; min-height:100vh; width:100%; margin: 0; padding: 0; align-items: center; justify-content: center; flex-direction:column; background-color: slategray;">
@@ -23,6 +23,7 @@
           <th scope="col">#</th>
           <th scope="col">Membro</th>
           <th scope="col">Pontuação</th>
+          <th scope="col">Pontuar / Penalisar</th>
         </tr>
       </thead>
       <tbody id = 'Tabela'>
@@ -69,6 +70,11 @@
             let colunaDois
             let espacoBarra
             let barraPonto
+            let colunaTres
+            let divIput
+            let divButton
+            let espacoInput
+            let espacoButton
             let posi
             let cont = 1
 
@@ -83,6 +89,15 @@
                   <div class="progress">
                       <div class="progress-bar" role="progressbar" style="width: 75%;">75%</div>
                     </div>  
+              </td>
+              <td>
+              <div class="input-group mb-3">
+               <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                   <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
+                   </div>
+                 </div>
+              
               </td>
               */
               
@@ -116,6 +131,38 @@
               
               linha.appendChild(colunaDois)
 
+              colunaTres = document.createElement("td")
+
+              divIput = document.createElement("div")
+              divIput.setAttribute("class", "input-group mb-3")
+
+              espacoInput = document.createElement("input")
+              espacoInput.setAttribute("type", "number");
+              espacoInput.setAttribute("class", "forma-control");
+              espacoInput.setAttribute("aria-describedby", "button-addon2");
+              espacoInput.id = nome
+              espacoInput.setAttribute("value", " ")
+
+              divIput.appendChild(espacoInput)
+
+              divButton = document.createElement("div")
+              divButton.setAttribute("class", "input-group-append")
+
+              espacoButton = document.createElement("button")
+              espacoButton.setAttribute("class", "btn btn-outline-secondary")
+              espacoButton.setAttribute("type", "button")
+              espacoButton.setAttribute("id","button-addon2")
+              espacoButton.setAttribute("onclick", "pontuar("+nome+","+pontos+")")
+              espacoButton.innerHTML = "Enviar"
+
+              divButton.appendChild(espacoButton)
+              
+              divIput.appendChild(divButton)
+
+              colunaTres.appendChild(divIput)
+
+              linha.appendChild(colunaTres)
+
               tabela.appendChild(linha)
 
               cont++
@@ -127,6 +174,16 @@
       }
        
       main()
+
+      function pontuar(Membro, pontos){
+        let acrescimo = document.getElementById(Membro.id).value
+        console.log(acrescimo)
+        console.log(Membro.id)
+        let nome = Membro.id
+
+        let update = nome + ":" + (pontos - acrescimo)
+        firebase.database().ref('/Membros/'+nome).update({})
+      }
     </script>
 
   </body>
